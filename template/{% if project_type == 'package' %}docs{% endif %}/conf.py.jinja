@@ -1,0 +1,26 @@
+from importlib import metadata
+
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+]
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+}
+
+# General
+source_suffix = '.rst'
+master_doc = 'index'
+project = '{{ project_slug }}'
+copyright = '{{ current_year }} onwards {{ author_name }}'
+version = release = metadata.version(project)
+exclude_trees = ['_build']
+pygments_style = 'sphinx'
+autodoc_member_order = 'bysource'
+
+# Options for HTML output
+html_theme = 'furo'
+htmlhelp_basename = project + 'doc'
+
+nitpicky = True

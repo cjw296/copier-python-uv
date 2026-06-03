@@ -1,0 +1,24 @@
+{{ project_name }}
+{{ '=' * (project_name | length) }}
+{% if project_type == 'package' %}
+|Docs|_ |PyPI|_ |Git|_ |CI|_
+
+.. |Docs| image:: https://readthedocs.org/projects/{{ project_slug }}/badge/?version=latest
+.. _Docs: https://{{ project_slug }}.readthedocs.io/en/latest/
+
+.. |PyPI| image:: https://badge.fury.io/py/{{ project_slug }}.svg
+.. _PyPI: https://pypi.org/project/{{ project_slug }}/
+
+.. |Git| image:: https://badge.fury.io/gh/{{ github_org }}%2F{{ project_slug }}.svg
+.. _Git: https://github.com/{{ github_org }}/{{ project_slug }}
+
+.. |CI| image:: https://github.com/{{ github_org }}/{{ project_slug }}/actions/workflows/ci.yml/badge.svg
+.. _CI: https://github.com/{{ github_org }}/{{ project_slug }}/actions/workflows/ci.yml
+{%- else %}
+|CI|_
+
+.. |CI| image:: https://github.com/{{ github_org }}/{{ project_slug }}/actions/workflows/ci.yml/badge.svg
+.. _CI: https://github.com/{{ github_org }}/{{ project_slug }}/actions/workflows/ci.yml
+{%- endif %}
+
+{{ project_description }}

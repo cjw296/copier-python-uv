@@ -1,0 +1,13 @@
+{%- if project_type == 'app' %}
+from {{ package_slug }}.cli import main
+
+
+def test_main() -> None:
+    main()
+{%- else %}
+import {{ package_slug }}
+
+
+def test_importable() -> None:
+    assert {{ package_slug }}
+{%- endif %}

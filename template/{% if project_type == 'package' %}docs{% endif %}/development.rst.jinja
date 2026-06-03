@@ -1,0 +1,38 @@
+Development
+===========
+
+Fork the repository:
+
+https://github.com/{{ github_org }}/{{ project_slug }}/
+
+Setting up a development environment
+------------------------------------
+
+Use `uv`__ to install all groups and extras:
+
+__ https://docs.astral.sh/uv/
+
+.. code-block:: bash
+
+    uv sync --all-extras --all-groups
+
+Running the checks
+------------------
+
+.. code-block:: bash
+
+    ./happy.sh
+
+Building the documentation
+--------------------------
+
+.. code-block:: bash
+
+    cd docs
+    make html
+
+Making a release
+----------------
+
+Update the version in ``pyproject.toml``, update ``CHANGELOG.rst`` and push to
+``main``. Carthorse takes care of the rest.

@@ -1,0 +1,9 @@
+# Agent Instructions
+
+- Run `./happy.sh` before committing; it must exit 0 with no errors.
+- Use `uv run` for all Python (`uv run pytest`, not `pytest`).
+- Type annotate everything. 100% test coverage is required.
+- Never write Python `import` statements inside function or method bodies.
+{% if project_type == 'package' -%}
+- Public API changes go in `CHANGELOG.rst`; docs live in `docs/` (Sphinx, `.rst`).
+{%- endif %}

@@ -1,0 +1,13 @@
+/bin
+/*.egg-info
+/include
+/lib
+.coverage
+.coverage.*
+_build/
+README.html
+.venv
+.claude
+{%- if project_type == 'package' %}
+uv.lock
+{%- endif %}

@@ -1,0 +1,73 @@
+# copier-python-uv — minimal Copier template for uv-based Python packages and apps.
+#
+#   uvx copier copy gh:cjw296/copier-python-uv ./my-thing --trust
+#   uvx copier update --trust          # later, to pull template improvements
+#
+# --trust is required because the template runs git init + uv sync as post-tasks.
+
+_subdirectory: template
+_min_copier_version: "9.0.0"
+
+_tasks:
+  - "git init -q -b main"
+  - "uv sync"
+
+project_type:
+  type: str
+  help: A reusable package (published to PyPI) or an application?
+  choices:
+    - package
+    - app
+  default: package
+
+project_name:
+  type: str
+  help: Human-readable project name, e.g. "My Library"
+  validator: "{% if not project_name.strip() %}project_name is required{% endif %}"
+
+package_slug:
+  type: str
+  help: Importable package name (under src/, snake_case)
+  default: "{{ project_name | lower | replace(' ', '_') | replace('-', '_') }}"
+
+project_description:
+  type: str
+  help: One-sentence description
+  default: ""
+
+author_name:
+  type: str
+  default: Chris Withers
+
+author_email:
+  type: str
+  default: chris@withers.org
+
+github_org:
+  type: str
+  help: GitHub org or user
+  default: cjw296
+
+python_version:
+  type: str
+  help: Minimum Python (package) / target Python (app)
+  default: "{% if project_type == 'app' %}3.14{% else %}3.12{% endif %}"
+
+type_checker:
+  type: str
+  help: Type checker to wire into happy.sh and pyproject
+  choices:
+    - mypy
+    - ty
+  default: "{% if project_type == 'app' %}ty{% else %}mypy{% endif %}"
+
+# --- computed, not prompted ---
+project_slug:
+  type: str
+  when: false
+  default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
+
+current_year:
+  type: str
+  when: false
+  default: "2026"
