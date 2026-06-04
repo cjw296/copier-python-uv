@@ -8,7 +8,7 @@ echo "=== Formatting ==="
 uv run ruff format .
 
 echo "=== Tests + Coverage ==="
-uv run pytest --cov=src/{{ package_slug }} --cov-report=term-missing --cov-fail-under=100 .
+uv run pytest --cov-report=term-missing --cov-fail-under=100
 
 echo "=== Type Checking ==="
 {%- if type_checker == 'mypy' %}

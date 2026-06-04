@@ -6,7 +6,11 @@ readme = "README.rst"
 authors = [{ name = "{{ author_name }}", email = "{{ author_email }}" }]
 license = { text = "MIT" }
 requires-python = ">={{ python_version }}"
+{%- if logging in ['loguru', 'both'] %}
+dependencies = ["loguru"]
+{%- else %}
 dependencies = []
+{%- endif %}
 {%- if project_type == 'package' %}
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -34,7 +38,7 @@ dev = [
     "pytest",
     "pytest-cov",
     "ruff",
-    "testfixtures>=11",
+    "testfixtures>=12",
     "sybil",
     {%- if type_checker == 'mypy' %}
     "mypy",
@@ -63,9 +67,10 @@ allow-direct-references = true
 
 [tool.pytest.ini_options]
 {%- if project_type == 'package' %}
-addopts = "-p no:doctest"
+addopts = "-p no:doctest --cov"
 testpaths = ["tests", "docs"]
 {%- else %}
+addopts = "--cov"
 testpaths = ["tests"]
 {%- endif %}
 

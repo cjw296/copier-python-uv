@@ -1,0 +1,39 @@
+{%- set fixtures = tmpdir_fixture or logging != 'none' -%}
+{%- set tf_names = [] -%}
+{%- if logging != 'none' %}{{ tf_names.append('LogCapture') or '' }}{% endif -%}
+{%- if logging in ['stdlib', 'both'] %}{{ tf_names.append('LoggingSource') or '' }}{% endif -%}
+{%- if tmpdir_fixture %}{{ tf_names.append('TempDir') or '' }}{% endif -%}
+{%- if logging == 'stdlib' %}{% set log_args = 'LoggingSource()' %}{% endif -%}
+{%- if logging == 'loguru' %}{% set log_args = 'LoguruSource()' %}{% endif -%}
+{%- if logging == 'both' %}{% set log_args = 'LoggingSource(), LoguruSource()' %}{% endif -%}
+{% if fixtures %}from collections.abc import Iterator
+{% endif %}{% if project_type == 'package' %}from doctest import REPORT_NDIFF, ELLIPSIS
+{% endif %}
+{% if fixtures %}import pytest
+{% endif %}{% if project_type == 'package' %}from sybil import Sybil
+from sybil.parsers.rest import DocTestParser, PythonCodeBlockParser, CaptureParser
+{% endif %}{% if fixtures %}from testfixtures import {{ tf_names | sort | join(', ') }}
+{% endif %}{% if logging in ['loguru', 'both'] %}from testfixtures.loguru import LoguruSource
+{% endif %}
+
+{% if tmpdir_fixture %}@pytest.fixture()
+def tmpdir() -> Iterator[TempDir]:
+    with TempDir() as tmpdir_:
+        yield tmpdir_
+
+
+{% endif %}{% if logging != 'none' %}@pytest.fixture()
+def logs() -> Iterator[LogCapture]:
+    with LogCapture({{ log_args }}) as logs_:
+        yield logs_
+
+
+{% endif %}{% if project_type == 'package' %}pytest_collect_file = Sybil(
+    parsers=[
+        DocTestParser(optionflags=REPORT_NDIFF | ELLIPSIS),
+        PythonCodeBlockParser(),
+        CaptureParser(),
+    ],
+    pattern='*.rst',
+).pytest()
+{% endif %}

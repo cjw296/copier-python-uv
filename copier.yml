@@ -10,12 +10,15 @@ _subdirectory: template
 _min_copier_version: "9.2.0"
 
 _tasks:
-  # On `copy` only: init the repo and commit the generated layout. uv sync runs
-  # first so an app's freshly-written uv.lock lands in that commit. `update`
-  # skips both — the repo already exists and these would make a spurious commit.
+  # On `copy` only: init the repo, format, and commit the generated layout. uv sync
+  # runs first so an app's freshly-written uv.lock lands in that commit and ruff is
+  # available; ruff format guarantees the initial commit is clean. `update` skips
+  # these — the repo already exists and they would make a spurious commit.
   - command: "git init -q -b main"
     when: "{{ _copier_operation == 'copy' }}"
   - "uv sync"
+  - command: "uv run ruff format ."
+    when: "{{ _copier_operation == 'copy' }}"
   - command: "git add -A && git commit -q -m 'Initial layout from copier-python-uv'"
     when: "{{ _copier_operation == 'copy' }}"
 
@@ -67,6 +70,21 @@ type_checker:
     - mypy
     - ty
   default: "{% if project_type == 'app' %}ty{% else %}mypy{% endif %}"
+
+tmpdir_fixture:
+  type: bool
+  help: Add a tmpdir fixture (testfixtures.TempDir) to conftest.py?
+  default: true
+
+logging:
+  type: str
+  help: Add a tested LogCapture fixture for which logging framework(s)?
+  choices:
+    none: none
+    stdlib logging: stdlib
+    loguru: loguru
+    stdlib + loguru: both
+  default: stdlib
 
 # --- computed, not prompted ---
 project_slug:

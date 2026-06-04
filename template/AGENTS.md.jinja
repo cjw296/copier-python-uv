@@ -2,8 +2,20 @@
 
 - Run `./happy.sh` before committing; it must exit 0 with no errors.
 - Use `uv run` for all Python (`uv run pytest`, not `pytest`).
-- Type annotate everything. 100% test coverage is required.
+- Type annotate everything. 100% test coverage is required (`src` and `tests`).
 - Never write Python `import` statements inside function or method bodies.
-{% if project_type == 'package' -%}
+{%- if project_type == 'package' %}
 - Public API changes go in `CHANGELOG.rst`; docs live in `docs/` (Sphinx, `.rst`).
+{%- endif %}
+
+## Testing — use testfixtures
+
+- Compare whole objects in one call: `compare(expected=..., actual=thing)` — never a
+  chain of `assert thing.foo == ...`, one per attribute.
+- Assert on exceptions with `ShouldRaise(SomeError('message'))`, not `pytest.raises`.
+{%- if tmpdir_fixture %}
+- Temp files/dirs: use the `tmpdir` fixture (a `testfixtures.TempDir`); `tmpdir.path` is a `Path`.
+{%- endif %}
+{%- if logging != 'none' %}
+- All logging must be tested via the `logs` fixture (`testfixtures.LogCapture`{% if logging == 'both' %}, capturing stdlib logging and loguru{% elif logging == 'loguru' %}, capturing loguru{% else %}, capturing stdlib logging{% endif %}); assert with `logs.check(...)` or `logs.check_present(...)`.
 {%- endif %}
