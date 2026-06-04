@@ -15,7 +15,8 @@ the `cjw296/python-workflow` reusable workflows.
 uvx copier copy gh:cjw296/copier-python-uv ./my-thing --trust
 ```
 
-`--trust` lets the template run `git init` and `uv sync` after generation.
+`--trust` lets the template, after generation, run `git init` + `uv sync` and make
+an initial commit of the generated layout. `copier update` skips the init/commit.
 
 ## Update an existing project
 

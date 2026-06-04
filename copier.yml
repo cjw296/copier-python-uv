@@ -3,14 +3,21 @@
 #   uvx copier copy gh:cjw296/copier-python-uv ./my-thing --trust
 #   uvx copier update --trust          # later, to pull template improvements
 #
-# --trust is required because the template runs git init + uv sync as post-tasks.
+# --trust is required because the template runs git init + uv sync as post-tasks
+# and makes an initial commit.
 
 _subdirectory: template
-_min_copier_version: "9.0.0"
+_min_copier_version: "9.2.0"
 
 _tasks:
-  - "git init -q -b main"
+  # On `copy` only: init the repo and commit the generated layout. uv sync runs
+  # first so an app's freshly-written uv.lock lands in that commit. `update`
+  # skips both — the repo already exists and these would make a spurious commit.
+  - command: "git init -q -b main"
+    when: "{{ _copier_operation == 'copy' }}"
   - "uv sync"
+  - command: "git add -A && git commit -q -m 'Initial layout from copier-python-uv'"
+    when: "{{ _copier_operation == 'copy' }}"
 
 project_type:
   type: str
